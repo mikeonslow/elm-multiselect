@@ -1,4 +1,13 @@
-module MultiSelect exposing (..)
+module MultiSelect exposing (view)
+
+{-| This library is meant to be a simple multi-select component with the ability to pass in your own 'view' template
+
+
+# view
+
+@docs view
+
+-}
 
 import Dict exposing (Dict)
 import Html exposing (..)
@@ -8,6 +17,10 @@ import Html.Events exposing (onClick)
 
 type alias Model r a =
     { options : Dict a (Option r a) }
+
+
+type Options r a
+    = Options (Dict a (Option r a))
 
 
 type alias Option r a =
@@ -76,6 +89,31 @@ subscriptions =
     \_ -> Sub.none
 
 
+{-| Render's the view for the multi-select component. The `render` parameter is a function that tells the `view`
+how you want your options drawn to the screen and follows the same format as the Html library of `tag [attributes] [children]`
+
+For example:
+
+    let
+        renderOption props =
+            MultiSelect.ViewTemplate
+                div [ class "option" ] [ i [ class "fas fa-map-marker-alt" ] [], text <| " " ++ props.label ]
+    in
+    MultiSelect.view options renderOption
+
+-}
+view :
+    { e | options : Dict comparable { d | selected : Bool, id : c } }
+    ->
+        ({ d | selected : Bool, id : c }
+         ->
+            { g
+                | attributes : List (Attribute (Msg c b))
+                , children : f
+                , element : List (Attribute (Msg c b)) -> f -> Html (Msg a b1)
+            }
+        )
+    -> Html (Msg a b1)
 view { options } render =
     let
         ( selectedOptions, availableOptions ) =
