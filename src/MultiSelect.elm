@@ -1,11 +1,16 @@
-module MultiSelect exposing (view)
+module MultiSelect
+    exposing
+        ( Data
+        , initial
+        , view
+        )
 
 {-| This library is meant to be a simple multi-select component with the ability to pass in your own 'view' template
 
 
 # view
 
-@docs view
+@docs Data, initial, view
 
 -}
 
@@ -15,12 +20,10 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
 
-type alias Model r a =
-    { options : Dict a (Option r a) }
-
-
-type Options r a
-    = Options (Dict a (Option r a))
+{-| Opaque type to store options
+-}
+type Data r a
+    = Data { options : Dict a (Option r a) }
 
 
 type alias Option r a =
@@ -38,12 +41,16 @@ type alias ViewTemplate msg =
     }
 
 
-initialModel options =
-    { options =
-        options
-            |> List.map (\x -> ( x.id, x ))
-            |> Dict.fromList
-    }
+{-| Initialize the multi-select with a set of options
+-}
+initial : List { r | label : String, selected : Bool, id : comparable } -> Data r comparable
+initial options =
+    Data
+        { options =
+            options
+                |> List.map (\x -> ( x.id, x ))
+                |> Dict.fromList
+        }
 
 
 type Msg a b
